@@ -5,8 +5,10 @@ import { ArrowBigLeft } from "lucide-react";
 import Link from "next/link";
 import JoinRoomForm from "@/components/form/JoinRoomForm";
 
-const JoinRoom = ({ params }: { params: { roomId: string } }) => {
-  const { roomId } = params;
+type Params = Promise<{ roomId: string }>;
+
+const JoinRoom = async ({ params }: { params: Params }) => {
+  const { roomId } = await params;
 
   return (
     <div className="container mx-auto flex h-screen w-screen items-center justify-center p-8">
