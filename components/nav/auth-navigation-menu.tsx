@@ -1,7 +1,6 @@
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 
-function NavigationMenu() {
+function AuthNavigationMenu() {
   return (
     <nav className="border-b bg-background">
       <div className="container mx-auto px-4">
@@ -11,15 +10,10 @@ function NavigationMenu() {
               ChatRooms
             </Link>
           </div>
-          <div className="flex items-center space-x-4">
-            <Button asChild>
-              <Link href={"/auth/signin"}>Sign In</Link>
-            </Button>
-          </div>
         </div>
       </div>
     </nav>
   );
 }
 
-export default NavigationMenu;
+export default AuthNavigationMenu;
