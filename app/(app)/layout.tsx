@@ -1,4 +1,4 @@
-import NavigationMenu from "@/components/nav/navigation-menu";
+import NavigationMenu from "@/components/nav/NavigationMenu";
 import React from "react";
 
 const AppLayout = ({ children }: { children: React.ReactNode }) => {

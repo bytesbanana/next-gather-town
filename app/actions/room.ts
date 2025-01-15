@@ -1,7 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { joinRoomSchema } from "../validations/room";
+import { joinRoomSchema } from "@/validations/room";
 
 export async function joinRoom(
   roomId: string,

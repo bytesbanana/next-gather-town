@@ -1,7 +1,11 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { auth } from "@/auth";
+import UserAvatar from "./UserAvatar";
 
-function NavigationMenu() {
+async function NavigationMenu() {
+  const session = await auth();
+
   return (
     <nav className="border-b bg-background">
       <div className="container mx-auto px-4">
@@ -12,9 +16,17 @@ function NavigationMenu() {
             </Link>
           </div>
           <div className="flex items-center space-x-4">
-            <Button asChild>
-              <Link href={"/auth/signin"}>Sign In</Link>
-            </Button>
+            {session?.user && (
+              <UserAvatar
+                imageUrl={session.user.image!}
+                name={session.user.name!}
+              />
+            )}
+            {!session?.user && (
+              <Button asChild>
+                <Link href={"/auth/signin"}>Sign In</Link>
+              </Button>
+            )}
           </div>
         </div>
       </div>

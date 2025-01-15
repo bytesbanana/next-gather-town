@@ -1,4 +1,4 @@
-import { ChatRoomCard } from "../../components/card/chat-room-card";
+import { ChatRoomCard } from "@/components/card/ChatRoomCard";
 import { chatRooms } from "@/data/chatRooms";
 
 export default function Home() {

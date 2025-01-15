@@ -1,4 +1,4 @@
-import AuthNavigationMenu from "@/components/nav/auth-navigation-menu";
+import AuthNavigationMenu from "@/components/nav/AuthNavigationMenu";
 import React from "react";
 
 const AppLayout = ({ children }: { children: React.ReactNode }) => {
