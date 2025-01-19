@@ -6,6 +6,8 @@ import { createId } from "@paralleldrive/cuid2";
 export const users = pgTable("users", {
   id: varchar("id", { length: 128 }).$defaultFn(() => createId()),
   email: text("email").unique().notNull(),
+  image: text("image").notNull(),
+  username: text("username").notNull(),
   created_at: timestamp("created_at").notNull().defaultNow(),
   updated_at: timestamp("updated_at", { mode: "string" })
     .notNull()

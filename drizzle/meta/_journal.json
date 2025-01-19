@@ -8,6 +8,13 @@
       "when": 1736869816853,
       "tag": "0000_good_madelyne_pryor",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1737048411932,
+      "tag": "0001_thin_iron_monger",
+      "breakpoints": true
     }
   ]
 }

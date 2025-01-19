@@ -16,6 +16,7 @@ import { animals, colors, uniqueNamesGenerator } from "unique-names-generator";
 import { Label } from "@/components/ui/label";
 
 import { joinRoom } from "@/app/actions/room";
+import type { User } from "next-auth";
 
 const initialState = {
   errors: {
@@ -24,7 +25,7 @@ const initialState = {
   },
 };
 
-const JoinRoomForm = ({ roomId }: { roomId: string }) => {
+const JoinRoomForm = ({ roomId }: { roomId: string; user: User }) => {
   const randomName = uniqueNamesGenerator({
     dictionaries: [colors, animals],
     separator: "_",

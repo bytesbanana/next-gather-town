@@ -1,4 +1,3 @@
-import React from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -21,9 +20,8 @@ const SignInForm = () => {
         <form
           action={async () => {
             "use server";
-            await signIn("google", {
-              redirectTo: "/",
-            });
+
+            await signIn("google");
           }}
         >
           <Button className="w-full" variant="outline" type="submit">

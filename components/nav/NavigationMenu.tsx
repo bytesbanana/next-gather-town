@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { auth } from "@/auth";
+import { auth, signOut } from "@/auth";
 import UserAvatar from "./UserAvatar";
 
 async function NavigationMenu() {
@@ -26,6 +26,16 @@ async function NavigationMenu() {
               <Button asChild>
                 <Link href={"/auth/signin"}>Sign In</Link>
               </Button>
+            )}
+            {session?.user && (
+              <form
+                action={async () => {
+                  "use server";
+                  await signOut();
+                }}
+              >
+                <Button type="submit">Sign Out</Button>
+              </form>
             )}
           </div>
         </div>
