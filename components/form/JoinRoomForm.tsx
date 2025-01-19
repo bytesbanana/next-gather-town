@@ -25,7 +25,7 @@ const initialState = {
   },
 };
 
-const JoinRoomForm = ({ roomId }: { roomId: string; user: User }) => {
+const JoinRoomForm = ({ roomId, user }: { roomId: string; user: User }) => {
   const randomName = uniqueNamesGenerator({
     dictionaries: [colors, animals],
     separator: "_",
@@ -46,7 +46,7 @@ const JoinRoomForm = ({ roomId }: { roomId: string; user: User }) => {
         <Input
           type="text"
           name="username"
-          defaultValue={randomName}
+          defaultValue={user.name || randomName}
           className="p-2"
         />
         {state?.errors?.username &&
