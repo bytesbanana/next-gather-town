@@ -20,12 +20,15 @@ import type { User } from "next-auth";
 
 const initialState = {
   errors: {
-    username: [],
-    character: [],
+    fields: {
+      username: [],
+      character: [],
+    },
+    message: "",
   },
 };
 
-const JoinRoomForm = ({ roomId, user }: { roomId: string; user: User }) => {
+const JoinRoomForm = ({ roomId, user }: { roomId: number; user: User }) => {
   const randomName = uniqueNamesGenerator({
     dictionaries: [colors, animals],
     separator: "_",
@@ -49,8 +52,10 @@ const JoinRoomForm = ({ roomId, user }: { roomId: string; user: User }) => {
           defaultValue={user.name || randomName}
           className="p-2"
         />
-        {state?.errors?.username &&
-          state.errors.username.map((error) => <p key={error}>{error}</p>)}
+        {state?.errors?.fields?.username &&
+          state.errors.fields?.username.map((error) => (
+            <p key={error}>{error}</p>
+          ))}
       </div>
 
       <div className="grid w-full max-w-sm items-center gap-1.5">

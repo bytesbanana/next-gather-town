@@ -14,7 +14,7 @@ const JoinRoom = async ({ params }: { params: Params }) => {
 
   return (
     <div className="container mx-auto flex h-[calc(100vh-65px)] w-screen items-center justify-center p-8">
-      <JoinRoomForm roomId={roomId} user={session.user} />
+      <JoinRoomForm roomId={+roomId} user={session.user} />
     </div>
   );
 };
