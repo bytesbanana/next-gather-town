@@ -38,13 +38,11 @@ export const usersToRooms = pgTable(
   "users_join_rooms",
   {
     userId: varchar("user_id", { length: 128 }).notNull(),
-    roomId: integer("room_id"),
+    roomId: integer("room_id").notNull(),
   },
   (table) => [
-    {
-      pk: primaryKey({
-        columns: [table.userId, table.roomId],
-      }),
-    },
+    primaryKey({
+      columns: [table.userId, table.roomId],
+    }),
   ],
 );
