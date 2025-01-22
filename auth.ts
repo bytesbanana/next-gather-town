@@ -1,6 +1,6 @@
 import NextAuth from "next-auth";
 import Google from "next-auth/providers/google";
-import { db, takeUniqueOrThrow } from "./db/db";
+import { db } from "./db/db";
 import { users } from "./db/schema";
 import { eq } from "drizzle-orm";
 
@@ -25,10 +25,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         const user = await db
           .select()
           .from(users)
-          .where(eq(users.email, userInfo.email))
-          .then(takeUniqueOrThrow);
+          .where(eq(users.email, userInfo.email));
 
-        if (!user) {
+        if (user.length === 0) {
+          console.log(`[nextauth][callbacks][signin] new user`, userInfo);
           await db.insert(users).values(userInfo);
         }
       } catch (error) {
@@ -37,6 +37,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
 
       return true;
+    },
+    jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+      }
+      return token;
+    },
+    session({ session, token }) {
+      session.user.id = token.id! as string;
+      return session;
     },
   },
 });
