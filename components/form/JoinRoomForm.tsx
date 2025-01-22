@@ -15,8 +15,7 @@ import { charcterAssets } from "@/data/game";
 import { animals, colors, uniqueNamesGenerator } from "unique-names-generator";
 import { Label } from "@/components/ui/label";
 
-import { joinRoom } from "@/app/actions/room";
-import type { User } from "next-auth";
+import { update } from "@/app/actions/user";
 
 const initialState = {
   errors: {
@@ -28,13 +27,25 @@ const initialState = {
   },
 };
 
-const JoinRoomForm = ({ roomId, user }: { roomId: number; user: User }) => {
+const ErrorLabel = ({ children }: { children: React.ReactNode }) => (
+  <p className="text-sm text-red-500">{children}</p>
+);
+
+interface JoinRoomFormProps {
+  roomId: number;
+  user: {
+    username: string;
+    character: string | null;
+  };
+}
+
+const JoinRoomForm = ({ roomId, user }: JoinRoomFormProps) => {
   const randomName = uniqueNamesGenerator({
     dictionaries: [colors, animals],
     separator: "_",
   });
 
-  const joinRoomWithRoomId = joinRoom.bind(null, roomId);
+  const joinRoomWithRoomId = update.bind(null, roomId);
   const [state, formAction] = useActionState(joinRoomWithRoomId, initialState);
 
   return (
@@ -49,18 +60,18 @@ const JoinRoomForm = ({ roomId, user }: { roomId: number; user: User }) => {
         <Input
           type="text"
           name="username"
-          defaultValue={user.name || randomName}
+          defaultValue={user.username || randomName}
           className="p-2"
         />
         {state?.errors?.fields?.username &&
           state.errors.fields?.username.map((error) => (
-            <p key={error}>{error}</p>
+            <ErrorLabel key={error}>{error}</ErrorLabel>
           ))}
       </div>
 
       <div className="grid w-full max-w-sm items-center gap-1.5">
         <Label htmlFor="picture">Character </Label>
-        <Select name="character">
+        <Select name="character" defaultValue={user.character || ""}>
           <SelectTrigger className="rounded-md border px-2">
             <SelectValue placeholder="Select character" />
           </SelectTrigger>
@@ -72,6 +83,11 @@ const JoinRoomForm = ({ roomId, user }: { roomId: number; user: User }) => {
             ))}
           </SelectContent>
         </Select>
+
+        {state?.errors?.fields?.character &&
+          state.errors.fields?.character.map((error) => (
+            <ErrorLabel key={error}>{error}</ErrorLabel>
+          ))}
       </div>
       <Button type="submit">Join</Button>
     </form>

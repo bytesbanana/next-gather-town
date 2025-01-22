@@ -3,12 +3,12 @@
 import { redirect } from "next/navigation";
 import { joinRoomSchema } from "@/validations/room";
 import { db } from "@/db/db";
-import { users, usersToRooms } from "@/db/schema";
-import { count, eq } from "drizzle-orm";
+import { users } from "@/db/schema";
+import { eq } from "drizzle-orm";
 import { auth } from "@/auth";
-import { MAX_USERS_IN_ROOM } from "@/lib/constants";
+import { revalidatePath } from "next/cache";
 
-export async function joinRoom(
+export async function update(
   roomId: number,
   prevState: unknown,
   formData: FormData,
@@ -28,7 +28,7 @@ export async function joinRoom(
     };
   }
 
-  if (!session?.user?.id) {
+  if (!session?.user.id) {
     return {
       errors: {
         fields: {
@@ -40,7 +40,6 @@ export async function joinRoom(
   }
 
   const { username, character } = validatedFields.data;
-
   try {
     await db
       .update(users)
@@ -48,36 +47,10 @@ export async function joinRoom(
         username,
         character,
       })
-      .where(eq(users.id, session.user.id));
-
-    const result = await db
-      .select({ count: count(usersToRooms.userId) })
-      .from(usersToRooms)
-      .where(eq(usersToRooms.roomId, roomId));
-
-    if (result.at(0)!.count > MAX_USERS_IN_ROOM) {
-      return {
-        errors: {
-          fields: {},
-          message: "Room is full",
-        },
-      };
-    }
-
-    await db
-      .insert(usersToRooms)
-      .values({
-        userId: session.user.id,
-        roomId,
-      })
-      .onConflictDoUpdate({
-        target: [usersToRooms.userId, usersToRooms.roomId],
-        set: {
-          userId: session.user.id,
-          roomId,
-        },
-      });
-  } catch {
+      .where(eq(users.email, session.user.email))
+      .returning();
+  } catch (err) {
+    console.log(err);
     return {
       errors: {
         fields: {},
@@ -86,5 +59,6 @@ export async function joinRoom(
     };
   }
 
+  revalidatePath("/room");
   redirect(`/room/${roomId}`);
 }

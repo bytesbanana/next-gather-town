@@ -1,14 +1,6 @@
 import { sql } from "drizzle-orm";
 
-import {
-  integer,
-  pgTable,
-  primaryKey,
-  serial,
-  text,
-  timestamp,
-  varchar,
-} from "drizzle-orm/pg-core";
+import { pgTable, serial, text, timestamp, varchar } from "drizzle-orm/pg-core";
 import { createId } from "@paralleldrive/cuid2";
 
 export const users = pgTable("users", {
@@ -33,16 +25,3 @@ export const rooms = pgTable("rooms", {
     .notNull()
     .default(sql`now()`),
 });
-
-export const usersToRooms = pgTable(
-  "users_join_rooms",
-  {
-    userId: varchar("user_id", { length: 128 }).notNull(),
-    roomId: integer("room_id").notNull(),
-  },
-  (table) => [
-    primaryKey({
-      columns: [table.userId, table.roomId],
-    }),
-  ],
-);
