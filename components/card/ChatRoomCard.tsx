@@ -17,9 +17,10 @@ export function ChatRoomCard({ room }: ChatRoomCardProps) {
       <CardContent className="flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <Users size={20} />
+          {/* TODO: Implement participant count
           <span>
             {room.participants} / {room.maxParticipants}
-          </span>
+          </span> */}
         </div>
         <Button asChild>
           <Link href={`/room/${room.id}/join`}>Join Room</Link>

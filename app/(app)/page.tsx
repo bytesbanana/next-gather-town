@@ -1,7 +1,15 @@
 import { ChatRoomCard } from "@/components/card/ChatRoomCard";
-import { chatRooms } from "@/data/chatRooms";
+import { db } from "@/db/db";
+import { rooms } from "@/db/schema";
 
-export default function Home() {
+export default async function Home() {
+  const chatRooms = await db
+    .select({
+      id: rooms.id,
+      name: rooms.name,
+    })
+    .from(rooms);
+
   return (
     <main className="container mx-auto p-8">
       <h1 className="mb-6 text-3xl font-bold">Available Chat Rooms</h1>
