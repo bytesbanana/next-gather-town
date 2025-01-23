@@ -1,4 +1,4 @@
-import { charcterAssets } from "@/data/game";
+import { CHARACTERS } from "@/lib/constants";
 import { Scene } from "phaser";
 
 export class Preloader extends Scene {
@@ -14,7 +14,7 @@ export class Preloader extends Scene {
       "kenney_rpg-urban-pack/Tilemap/urban.tmj",
     );
 
-    charcterAssets.forEach(({ key, url }) => {
+    CHARACTERS.forEach(({ key, url }) => {
       this.load.spritesheet(key, url, {
         frameWidth: 20,
         frameHeight: 32,

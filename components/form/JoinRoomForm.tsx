@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { charcterAssets } from "@/data/game";
+import { CHARACTERS } from "@/lib/constants";
 import { animals, colors, uniqueNamesGenerator } from "unique-names-generator";
 import { Label } from "@/components/ui/label";
 
@@ -76,7 +76,7 @@ const JoinRoomForm = ({ roomId, user }: JoinRoomFormProps) => {
             <SelectValue placeholder="Select character" />
           </SelectTrigger>
           <SelectContent className="fixed">
-            {charcterAssets.map(({ key }) => (
+            {CHARACTERS.map(({ key }) => (
               <SelectItem key={key} value={key}>
                 {key}
               </SelectItem>
