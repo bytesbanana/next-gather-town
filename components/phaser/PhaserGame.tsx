@@ -2,8 +2,17 @@ import { useEffect, useRef } from "react";
 import Phaser from "phaser";
 import { cn } from "@/lib/utils";
 import StartGame from "./main";
+import { socket } from "@/lib/socket";
 
-const PhaserConatiner = () => {
+const PhaserConatiner = ({
+  userId,
+  username,
+  character,
+}: {
+  userId: number | string;
+  username: string;
+  character: string;
+}) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const gameRef = useRef<Phaser.Game | null>(null);
 
@@ -11,6 +20,24 @@ const PhaserConatiner = () => {
     if (!gameRef.current) {
       gameRef.current = StartGame();
     }
+    const controller = new AbortController();
+
+    function onConnect() {
+      console.log("[ws] connect");
+    }
+
+    async function initWS() {
+      socket.on("connect", onConnect);
+      controller.signal.addEventListener("abort", () => {
+        socket.off("connect", onConnect);
+        socket.disconnect();
+      });
+
+      socket.auth = { userId, username, character };
+      socket.connect();
+    }
+
+    initWS();
 
     return () => {
       if (gameRef.current) {
@@ -19,8 +46,10 @@ const PhaserConatiner = () => {
           gameRef.current = null;
         }
       }
+
+      controller.abort();
     };
-  }, []);
+  }, [character, userId, username]);
 
   return (
     <div
