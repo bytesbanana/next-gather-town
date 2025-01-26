@@ -21,8 +21,7 @@ export class Preloader extends Scene {
       });
     });
   }
-
-  create() {
-    this.scene.start("game");
+  create(params: Record<string, unknown>) {
+    this.scene.start("game", { ...params });
   }
 }

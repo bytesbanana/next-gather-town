@@ -11,19 +11,39 @@ export class Game extends Scene {
     private frameTime: number = 0,
     private lastLocation: { x: number; y: number },
   ) {
-    super("game");
+    super({
+      key: "game",
+      active: false,
+    });
     this.otherPlayers = {};
   }
 
-  create() {
+  create({ roomId, userId }: { roomId: number; userId: string }) {
     this.createMap();
-    this.currentPlayer = Player.build(this, {
-      x: 100,
-      y: 100,
-      name: "player",
-      character: "player000",
-    });
-    this.lastLocation = { x: this.currentPlayer.x, y: this.currentPlayer.y };
+    socket.on(
+      "gameUpdate",
+      ({
+        rooms,
+      }: {
+        rooms: Record<
+          string,
+          Record<
+            string,
+            { x: number; y: number; name: string; character: string }
+          >
+        >;
+      }) => {
+        if (!this.currentPlayer) {
+          this.currentPlayer = Player.build(this, {
+            ...rooms[roomId][userId],
+          });
+          this.lastLocation = {
+            x: this.currentPlayer.x,
+            y: this.currentPlayer.y,
+          };
+        }
+      },
+    );
   }
 
   update(time: number, delta: number): void {

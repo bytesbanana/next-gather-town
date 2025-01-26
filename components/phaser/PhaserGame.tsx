@@ -8,17 +8,19 @@ const PhaserConatiner = ({
   userId,
   username,
   character,
+  roomId,
 }: {
   userId: number | string;
   username: string;
   character: string;
+  roomId: number;
 }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const gameRef = useRef<Phaser.Game | null>(null);
 
   useEffect(() => {
     if (!gameRef.current) {
-      gameRef.current = StartGame();
+      gameRef.current = StartGame({ roomId, userId: userId.toString() });
     }
     const controller = new AbortController();
 
@@ -33,7 +35,7 @@ const PhaserConatiner = ({
         socket.disconnect();
       });
 
-      socket.auth = { userId, username, character };
+      socket.auth = { userId, username, character, roomId };
       socket.connect();
     }
 
@@ -49,7 +51,7 @@ const PhaserConatiner = ({
 
       controller.abort();
     };
-  }, [character, userId, username]);
+  }, [character, roomId, userId, username]);
 
   return (
     <div
