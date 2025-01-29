@@ -6,10 +6,9 @@ import { socket } from "@/lib/socket";
 
 export class Game extends Scene {
   constructor(
-    private currentPlayer: Player,
+    private myPlayer: Player,
     private otherPlayers: Record<string, OtherPlayer>,
     private frameTime: number = 0,
-    private lastLocation: { x: number; y: number },
   ) {
     super({
       key: "game",
@@ -29,19 +28,44 @@ export class Game extends Scene {
           string,
           Record<
             string,
-            { x: number; y: number; name: string; character: string }
+            {
+              userId: string;
+              x: number;
+              y: number;
+              username: string;
+              character: string;
+            }
           >
         >;
       }) => {
-        if (!this.currentPlayer) {
-          this.currentPlayer = Player.build(this, {
+        if (!this.myPlayer) {
+          const myPlayerData = {
             ...rooms[roomId][userId],
-          });
-          this.lastLocation = {
-            x: this.currentPlayer.x,
-            y: this.currentPlayer.y,
+            name: rooms[roomId][userId].username,
           };
+
+          this.myPlayer = Player.build(this, myPlayerData);
         }
+
+        Object.keys(rooms[roomId])
+          .filter((id) => id !== userId)
+          .forEach((playerId) => {
+            const playerData = {
+              ...rooms[roomId][playerId],
+              name: rooms[roomId][playerId].username,
+            };
+            if (!this.otherPlayers[playerData.userId]) {
+              this.otherPlayers[playerData.userId] = OtherPlayer.build(
+                this,
+                playerData,
+              );
+            } else {
+              this.otherPlayers[playerData.userId].moveToNewLocation(
+                playerData.x,
+                playerData.y,
+              );
+            }
+          });
       },
     );
   }
@@ -49,16 +73,16 @@ export class Game extends Scene {
   update(time: number, delta: number): void {
     this.frameTime += delta;
 
-    if (this.frameTime > 120) {
+    if (this.frameTime > 60) {
       this.frameTime = 0;
 
-      const { x, y } = this.currentPlayer;
-      if (x !== this.lastLocation.x || y !== this.lastLocation.y) {
+      if (this.myPlayer) {
+        const { x, y } = this.myPlayer;
+
         socket.emit("locationUpdate", {
           x: x,
           y: y,
         });
-        this.lastLocation = { x, y };
       }
     }
   }
