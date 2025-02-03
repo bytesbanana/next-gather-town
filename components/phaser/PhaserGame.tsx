@@ -3,6 +3,7 @@ import Phaser from "phaser";
 import { cn } from "@/lib/utils";
 import StartGame from "./main";
 import { socket } from "@/lib/socket";
+import { ChatboxForm } from "../form/ChatboxForm";
 
 const PhaserConatiner = ({
   userId,
@@ -54,13 +55,17 @@ const PhaserConatiner = ({
   }, [character, roomId, userId, username]);
 
   return (
-    <div
-      id="phaser-container"
-      ref={containerRef}
-      className={cn(
-        "absolute left-[50%] top-[50%] -translate-x-1/2 -translate-y-1/2",
-      )}
-    ></div>
+    <div>
+      <div
+        id="phaser-container"
+        ref={containerRef}
+        className={cn(
+          "absolute left-[50%] top-[50%] -translate-x-1/2 -translate-y-1/2",
+        )}
+      >
+        <ChatboxForm className="absolute bottom-0 left-0 m-4" />
+      </div>
+    </div>
   );
 };
 

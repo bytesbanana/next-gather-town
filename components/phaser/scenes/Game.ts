@@ -3,6 +3,7 @@ import { Scene } from "phaser";
 import { Player } from "../objects/Player";
 import { OtherPlayer } from "../objects/OtherPlayer";
 import { socket } from "@/lib/socket";
+import { EventBus, EVENTS } from "../EventBus";
 
 export class Game extends Scene {
   constructor(
@@ -68,6 +69,12 @@ export class Game extends Scene {
           });
       },
     );
+
+    this.input.keyboard?.on("keydown", (event: KeyboardEvent) => {
+      if (event.key === "Enter") {
+        EventBus.emit(EVENTS.onChatFocus);
+      }
+    });
   }
 
   update(time: number, delta: number): void {
