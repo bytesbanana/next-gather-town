@@ -4,6 +4,7 @@ import { Player } from "../objects/Player";
 import { OtherPlayer } from "../objects/OtherPlayer";
 import { socket } from "@/lib/socket";
 import { EventBus, EVENTS } from "../EventBus";
+import { Rooms } from "@/types/game";
 
 export class Game extends Scene {
   constructor(
@@ -20,55 +21,36 @@ export class Game extends Scene {
 
   create({ roomId, userId }: { roomId: number; userId: string }) {
     this.createMap();
-    socket.on(
-      "gameUpdate",
-      ({
-        rooms,
-      }: {
-        rooms: Record<
-          string,
-          Record<
-            string,
-            {
-              userId: string;
-              x: number;
-              y: number;
-              username: string;
-              character: string;
-            }
-          >
-        >;
-      }) => {
-        if (!this.myPlayer) {
-          const myPlayerData = {
-            ...rooms[roomId][userId],
-            name: rooms[roomId][userId].username,
+    socket.on("gameUpdate", ({ rooms }: { rooms: Rooms }) => {
+      if (!this.myPlayer) {
+        const myPlayerData = {
+          ...rooms[roomId].players[userId],
+          name: rooms[roomId].players[userId].username,
+        };
+
+        this.myPlayer = Player.build(this, myPlayerData);
+      }
+
+      Object.keys(rooms[roomId].players)
+        .filter((id) => id !== userId)
+        .forEach((playerId) => {
+          const playerData = {
+            ...rooms[roomId].players[playerId],
+            name: rooms[roomId].players[playerId].username,
           };
-
-          this.myPlayer = Player.build(this, myPlayerData);
-        }
-
-        Object.keys(rooms[roomId])
-          .filter((id) => id !== userId)
-          .forEach((playerId) => {
-            const playerData = {
-              ...rooms[roomId][playerId],
-              name: rooms[roomId][playerId].username,
-            };
-            if (!this.otherPlayers[playerData.userId]) {
-              this.otherPlayers[playerData.userId] = OtherPlayer.build(
-                this,
-                playerData,
-              );
-            } else {
-              this.otherPlayers[playerData.userId].moveToNewLocation(
-                playerData.x,
-                playerData.y,
-              );
-            }
-          });
-      },
-    );
+          if (!this.otherPlayers[playerData.userId]) {
+            this.otherPlayers[playerData.userId] = OtherPlayer.build(
+              this,
+              playerData,
+            );
+          } else {
+            this.otherPlayers[playerData.userId].moveToNewLocation(
+              playerData.x,
+              playerData.y,
+            );
+          }
+        });
+    });
 
     this.input.keyboard?.on("keydown", (event: KeyboardEvent) => {
       if (event.key === "Enter") {
