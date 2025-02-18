@@ -21,6 +21,10 @@ export class Game extends Scene {
 
   create({ roomId, userId }: { roomId: number; userId: string }) {
     this.createMap();
+    socket.on("userDisconnected", (userId) => {
+      this.otherPlayers[userId].destroy();
+      delete this.otherPlayers[userId];
+    });
     socket.on("gameUpdate", ({ rooms }: { rooms: Rooms }) => {
       if (!this.myPlayer) {
         const myPlayerData = {
